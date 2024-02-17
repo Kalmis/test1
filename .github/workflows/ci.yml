@@ -9,50 +9,11 @@ on:
       - "*"
 
 jobs:
-  # Run on only on master branch
   build:
     runs-on: ubuntu-22.04
-    if: github.ref == 'refs/heads/main'
     permissions:
       contents: write
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Determine semantic version
-        id: release-version
-        uses: paulhatch/semantic-version@v5.4.0
-        with:
-          tag_prefix: "v"
-          major_pattern: "(MAJOR)"
-          minor_pattern: "(MINOR)"
-          bump_each_commit: false
-          enable_prerelease_mode: false
-          version_format: "${major}.${minor}.${patch}-rc${increment}"
-
-      - name: Create release folder
-        run: |
-          mkdir -p release
-          mkdir -p release/sourcemaps
-          echo "v$(echo ${{ steps.release-version.outputs.version }})" > release/version.txt
-          echo "v$(echo ${{ steps.release-version.outputs.version_tag }})" > release/version_tag.txt
-
-      - name: Upload Release Artifacts
-        # Needs to be V3, otherwise download in another workflow does not work
-        uses: actions/upload-artifact@v3
-        with:
-          name: release
-          path: release
-
-      # Create a pre-release which has a tag as defined above
-      # When a production deployment/release is done, then
-      # a real release will be created without the rc<increment> stuff
-      - name: Create a pre-Release
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "release/**"
-          prerelease: true
-          generateReleaseNotes: true
-          tag: ${{ steps.release-version.outputs.version }}
+      - run: echo "NICE!"
