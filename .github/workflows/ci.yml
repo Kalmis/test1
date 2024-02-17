@@ -51,11 +51,3 @@ jobs:
           prerelease: true
           generateReleaseNotes: true
           tag: ${{ steps.release-version.outputs.version }}
-
-      - name: Create a pre-Release
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "release/**"
-          prerelease: false
-          generateReleaseNotes: true
-          tag: ${{ steps.release-version.outputs.version_tag }}
