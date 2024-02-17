@@ -2,7 +2,7 @@ name: Continuous Deployment
 
 on:
   workflow_run:
-    workflows: [ci]
+    workflows: ["Continuous Integration"]
     types: [completed]
     branches: [main]
 
@@ -18,3 +18,67 @@ jobs:
         with:
           name: release
           path: release
+
+      - name: Deploy to Staging
+        run: |
+          echo "Deploying to staging..."
+          # Your deployment script here
+
+      - name: Deploy to Staging
+        run: |
+          git tag -f staging-latest
+          git push origin staging-latest
+
+  deploy-to-beta:
+    runs-on: ubuntu-22.04
+    needs: deploy-to-staging
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Release Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: release
+          path: release
+
+      - name: Deploy to Beta
+        run: |
+          echo "Deploying to beta..."
+          # Your deployment script here
+
+      - name: Deploy to Beta
+        run: |
+          git tag -f beta-latest
+          git push origin beta-latest
+
+  deploy-to-production:
+    runs-on: ubuntu-22.04
+    needs: deploy-to-beta
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Release Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: release
+          path: release
+
+      - name: Deploy to Production
+        run: |
+          echo "Deploying to production..."
+          # Your deployment script here
+
+      - name: Deploy to Production
+        run: |
+          git tag -f production-latest
+          git push origin production-latest
+
+      - name: Create a pre-Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "release/**"
+          prerelease: true
+          generateReleaseNotes: true
+          tag: "$(echo release/version_tag.txt)"
