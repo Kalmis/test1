@@ -45,6 +45,9 @@ jobs:
           name: release
           path: release
 
+      # Create a pre-release which has a tag as defined above
+      # When a production deployment/release is done, then
+      # a real release will be created without the rc<increment> stuff
       - name: Create a pre-Release
         uses: ncipollo/release-action@v1
         with:
