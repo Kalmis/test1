@@ -24,7 +24,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: release
-          path: release
           run-id: ${{ github.event.workflow_run.id}}
 
       - name: Deploy to Staging
