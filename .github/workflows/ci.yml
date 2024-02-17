@@ -28,14 +28,14 @@ jobs:
           tag_prefix: "v"
           major_pattern: "(MAJOR)"
           minor_pattern: "(MINOR)"
-          bump_each_commit: false
+          bump_each_commit: true
           enable_prerelease_mode: false
 
       - name: Create release folder
         run: |
           mkdir -p release
           mkdir -p release/sourcemaps
-          echo "$(echo ${{ steps.release-version.outputs.version }})" > release/version.txt
+          echo "$(echo ${{ steps.release-version.outputs.version_tag }})" > release/version.txt
 
       - name: Upload Release Artifacts
         uses: actions/upload-artifact@v4
@@ -44,11 +44,9 @@ jobs:
           path: release
 
       - name: Create a Draft Release
-        uses: softprops/action-gh-release@v1
+        uses: ncipollo/release-action@v1
         with:
-          files: |
-            release/**
-          tag_name: ${{ steps.release-version.outputs.version }}
-          generate_release_notes: true
+          artifacts: "release/**"
           draft: true
           prerelease: true
+          tag: ${{ steps.release-version.outputs.version_tag }}
