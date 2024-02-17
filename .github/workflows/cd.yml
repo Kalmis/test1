@@ -12,6 +12,7 @@ jobs:
     permissions:
       # Required so we can download artifact from another workflow
       actions: read
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -42,6 +43,7 @@ jobs:
     permissions:
       # Required so we can download artifact from another workflow
       actions: read
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -69,6 +71,7 @@ jobs:
     permissions:
       # Required so we can download artifact from another workflow
       actions: read
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
