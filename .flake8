@@ -18,6 +18,7 @@ extend-ignore =
     SIM110
     SIM111
     
+
     # No need for link as we use jira-link
     T003
     # No need to use import x / from .. import for std/3rd party libs
