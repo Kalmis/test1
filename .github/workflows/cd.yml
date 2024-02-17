@@ -1,7 +1,4 @@
 name: Continuous Deployment
-permissions:
-  # Required so we can download artifact from another workflow
-  actions: read
 
 on:
   workflow_run:
@@ -12,6 +9,9 @@ on:
 jobs:
   deploy-to-staging:
     runs-on: ubuntu-22.04
+    permissions:
+      # Required so we can download artifact from another workflow
+      actions: read
 
     steps:
       - uses: actions/checkout@v4
@@ -39,6 +39,9 @@ jobs:
   deploy-to-beta:
     runs-on: ubuntu-22.04
     needs: deploy-to-staging
+    permissions:
+      # Required so we can download artifact from another workflow
+      actions: read
 
     steps:
       - uses: actions/checkout@v4
@@ -63,6 +66,9 @@ jobs:
   deploy-to-production:
     runs-on: ubuntu-22.04
     needs: deploy-to-beta
+    permissions:
+      # Required so we can download artifact from another workflow
+      actions: read
 
     steps:
       - uses: actions/checkout@v4
