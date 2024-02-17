@@ -40,7 +40,8 @@ jobs:
           echo "v$(echo ${{ steps.release-version.outputs.version_tag }})" > release/version_tag.txt
 
       - name: Upload Release Artifacts
-        uses: actions/upload-artifact@v4
+        # Needs to be V3, otherwise download in another workflow does not work
+        uses: actions/upload-artifact@v3
         with:
           name: release
           path: release
