@@ -26,7 +26,7 @@ jobs:
           minor_pattern: "(MINOR)"
           bump_each_commit: false
           enable_prerelease_mode: false
-          version_format: "${major}.${minor}.${patch}-rc${increment}"
+          version_format: "v${major}.${minor}.${patch}-rc${increment}"
 
       - name: Create release folder
         run: |
@@ -80,7 +80,7 @@ jobs:
       - name: Deploy to Staging
         run: |
           git tag -f staging-latest
-          git push origin staging-latest
+          git push -f origin staging-latest
 
   deploy-to-beta:
     runs-on: ubuntu-22.04
@@ -107,7 +107,7 @@ jobs:
       - name: Deploy to Beta
         run: |
           git tag -f beta-latest
-          git push origin beta-latest
+          git push -f origin beta-latest
 
   deploy-to-production:
     runs-on: ubuntu-22.04
@@ -134,7 +134,7 @@ jobs:
       - name: Deploy to Production
         run: |
           git tag -f production-latest
-          git push origin production-latest
+          git push -f origin production-latest
 
       - name: Read version tag
         id: read_version
