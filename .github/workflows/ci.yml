@@ -1,0 +1,54 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+  # Run on only on master branch
+  build:
+    runs-on: ubuntu-22.04
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine semantic version
+        id: release-version
+        uses: paulhatch/semantic-version@v5.3.0
+        with:
+          tag_prefix: "v"
+          major_pattern: "(MAJOR)"
+          minor_pattern: "(MINOR)"
+          bump_each_commit: false
+          enable_prerelease_mode: false
+
+      - name: Create release folder
+        run: |
+          mkdir -p release
+          mkdir -p release/sourcemaps
+          echo "$(echo ${{ steps.release-version.outputs.version }})" > release/version.txt
+
+      - name: Upload Release Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release
+          path: release
+
+      - name: Create a Draft Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            release/**
+          tag_name: ${{ steps.release-version.outputs.version }}
+          generate_release_notes: true
+          draft: true
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
