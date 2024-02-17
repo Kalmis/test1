@@ -32,8 +32,8 @@ jobs:
         run: |
           mkdir -p release
           mkdir -p release/sourcemaps
-          echo "v$(echo ${{ steps.release-version.outputs.version }})" > release/version.txt
-          echo "v$(echo ${{ steps.release-version.outputs.version_tag }})" > release/version_tag.txt
+          echo "$(echo ${{ steps.release-version.outputs.version }})" > release/version.txt
+          echo "$(echo ${{ steps.release-version.outputs.version_tag }})" > release/version_tag.txt
 
       - name: Upload Release Artifacts
         # Needs to be V3, otherwise download in another workflow does not work
@@ -144,6 +144,5 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "release/**"
-          prerelease: true
           generateReleaseNotes: true
           tag: ${{ steps.read_version.outputs.tag }}
