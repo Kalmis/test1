@@ -43,15 +43,6 @@ jobs:
           name: release
           path: release
 
-      - name: Create a Draft Release
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "release/**"
-          draft: false
-          prerelease: true
-          generateReleaseNotes: true
-          tag: ${{ steps.release-version.outputs.version_tag }}
-
       - name: Create a Release Release
         uses: ncipollo/release-action@v1
         with:
