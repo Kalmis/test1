@@ -17,7 +17,8 @@ extend-ignore =
     # Any, all.. Why not map and apply and...
     SIM110
     SIM111
-    
+
+
 
     # No need for link as we use jira-link
     T003
