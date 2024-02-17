@@ -1,4 +1,7 @@
 name: Continuous Deployment
+permissions:
+  # Required so we can download artifact from another workflow
+  actions: read
 
 on:
   workflow_run:
