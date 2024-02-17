@@ -136,10 +136,14 @@ jobs:
           git tag -f production-latest
           git push origin production-latest
 
+      - name: Read version tag
+        id: read_version
+        run: echo "::set-output name=tag::$(cat release/version_tag.txt)"
+
       - name: Create a pre-Release
         uses: ncipollo/release-action@v1
         with:
           artifacts: "release/**"
           prerelease: true
           generateReleaseNotes: true
-          tag: "$(echo release/version_tag.txt)"
+          tag: ${{ steps.read_version.outputs.tag }}
