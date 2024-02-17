@@ -18,6 +18,7 @@ jobs:
         with:
           name: release
           path: release
+          run-id: ${{ github.event.workflow_run.id}}
 
       - name: Deploy to Staging
         run: |
@@ -41,6 +42,7 @@ jobs:
         with:
           name: release
           path: release
+          run-id: ${{ github.event.workflow_run.id}}
 
       - name: Deploy to Beta
         run: |
@@ -64,6 +66,7 @@ jobs:
         with:
           name: release
           path: release
+          run-id: ${{ github.event.workflow_run.id}}
 
       - name: Deploy to Production
         run: |
