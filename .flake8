@@ -15,9 +15,10 @@ extend-ignore =
     # Tries to enforce use of contextlib.suppress over try-except
     SIM105
     # Any, all.. Why not map and apply and...
-    
+
     SIM110
     SIM111
+
 
 
 
