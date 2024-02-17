@@ -49,4 +49,5 @@ jobs:
           artifacts: "release/**"
           draft: false
           prerelease: true
+          generateReleaseNotes: true
           tag: ${{ steps.release-version.outputs.version_tag }}
