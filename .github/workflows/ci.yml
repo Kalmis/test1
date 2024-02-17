@@ -58,3 +58,4 @@ jobs:
           prerelease: false
           generateReleaseNotes: true
           allowUpdates: true
+          tag: ${{ steps.release-version.outputs.version_tag }}
