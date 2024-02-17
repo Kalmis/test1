@@ -12,6 +12,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - run: |
+          echo ${{ github.event.workflow_run.id}}
+          echo ${{ github.event.workflow_run.workflow_id}}
 
       - name: Download Release Artifacts
         uses: actions/download-artifact@v4
