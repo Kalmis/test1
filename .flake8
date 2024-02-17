@@ -18,6 +18,7 @@ extend-ignore =
     SIM110
     SIM111
 
+Change 3
 
 
     # No need for link as we use jira-link
