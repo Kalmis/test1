@@ -5,6 +5,7 @@ on:
     workflows: ["Continuous Integration"]
     types: [completed]
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -32,7 +33,6 @@ jobs:
         run: |
           mkdir -p release
           mkdir -p release/sourcemaps
-          echo "$(echo ${{ steps.release-version.outputs.version }})" > release/version.txt
           echo "$(echo ${{ steps.release-version.outputs.version_tag }})" > release/version_tag.txt
 
       - name: Upload Release Artifacts
