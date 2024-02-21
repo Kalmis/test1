@@ -1,0 +1,83 @@
+name: Continuous Deployment
+
+on:
+  workflow_run:
+    workflows: ["Continuous Integration"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine semantic version
+        id: release-version
+        uses: paulhatch/semantic-version@v5.4.0
+        with:
+          tag_prefix: "v"
+          major_pattern: "(MAJOR)"
+          minor_pattern: "(MINOR)"
+          bump_each_commit: false
+          enable_prerelease_mode: false
+          version_format: "v${major}.${minor}.${patch}-rc${increment}"
+
+      - name: Create release folder
+        run: |
+          mkdir -p release
+          mkdir -p release/sourcemaps
+          echo "$(echo ${{ steps.release-version.outputs.version_tag }})" > release/version_tag.txt
+
+      - name: Upload Release Artifacts
+        # Needs to be V3, otherwise download in another workflow does not work
+        uses: actions/upload-artifact@v4
+        with:
+          name: release
+          path: release
+
+      # Create a pre-release which has a tag as defined above
+      # When a production deployment/release is done, then
+      # a real release will be created without the rc<increment> stuff
+      - name: Create a pre-Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "release/**"
+          prerelease: true
+          generateReleaseNotes: true
+          tag: ${{ steps.release-version.outputs.version }}
+
+  deploy-to-staging:
+    runs-on: ubuntu-22.04
+    needs: build
+    permissions:
+      # Required for git tag and push
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          echo ${{ github.event.workflow_run.id}}
+          echo ${{ github.event.workflow_run.workflow_id}}
+
+      - name: Download Release Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: release
+          path: release
+
+      - name: Deploy to Staging
+        run: |
+          echo "Deploying to staging..."
+          # Your deployment script here
+
+      - name: Deploy to Staging
+        run: |
+          git tag -f staging-latest
+          git push -f origin staging-latest

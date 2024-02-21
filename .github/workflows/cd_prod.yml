@@ -1,10 +1,6 @@
 name: Continuous Deployment
 
 on:
-  workflow_run:
-    workflows: ["Continuous Integration"]
-    types: [completed]
-    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -53,65 +49,9 @@ jobs:
           generateReleaseNotes: true
           tag: ${{ steps.release-version.outputs.version }}
 
-  deploy-to-staging:
-    runs-on: ubuntu-22.04
-    needs: build
-    permissions:
-      # Required for git tag and push
-      contents: write
-
-    steps:
-      - uses: actions/checkout@v4
-      - run: |
-          echo ${{ github.event.workflow_run.id}}
-          echo ${{ github.event.workflow_run.workflow_id}}
-
-      - name: Download Release Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: release
-          path: release
-
-      - name: Deploy to Staging
-        run: |
-          echo "Deploying to staging..."
-          # Your deployment script here
-
-      - name: Deploy to Staging
-        run: |
-          git tag -f staging-latest
-          git push -f origin staging-latest
-
-  deploy-to-beta:
-    runs-on: ubuntu-22.04
-    needs: deploy-to-staging
-    permissions:
-      # Required for git tag and push
-      contents: write
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download Release Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: release
-          path: release
-          run-id: ${{ github.event.workflow_run.id}}
-
-      - name: Deploy to Beta
-        run: |
-          echo "Deploying to beta..."
-          # Your deployment script here
-
-      - name: Deploy to Beta
-        run: |
-          git tag -f beta-latest
-          git push -f origin beta-latest
-
   deploy-to-production:
     runs-on: ubuntu-22.04
-    needs: deploy-to-beta
+    needs: build
     permissions:
       # Required for release creation
       contents: write
@@ -140,7 +80,7 @@ jobs:
         id: read_version
         run: echo "::set-output name=tag::$(cat release/version_tag.txt)"
 
-      - name: Create a pre-Release
+      - name: Create a Release
         uses: ncipollo/release-action@v1
         with:
           artifacts: "release/**"
